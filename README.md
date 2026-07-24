@@ -30,12 +30,19 @@ local, free, and reproducible.
 
 ## Setup (one time, ~5 minutes)
 
+Python deps are managed with [uv](https://docs.astral.sh/uv/) via
+`pyproject.toml` (a `uv.lock` is committed for reproducible installs).
+
 ```bash
-git clone <your-repo-url> && cd video-factory
-bash setup.sh                      # deps + voice model + music assets
-source venv/bin/activate
-export ANTHROPIC_API_KEY=sk-...    # optional; enables full automation
+git clone https://github.com/Tunikipranay/insta_video_generator.git
+cd insta_video_generator
+bash setup.sh          # system deps + uv sync + voice model + music assets
+echo 'ANTHROPIC_API_KEY=sk-ant-...' > .env   # optional; enables full automation
 ```
+
+`.env` is git-ignored — your key never leaves your machine. Prefer doing it
+manually? `uv sync` creates the environment from the lockfile; the rest of
+setup.sh just downloads the voice model and generates the music assets.
 
 Then edit `config.py` — handles, colors, target duration all live there.
 
@@ -43,14 +50,16 @@ Then edit `config.py` — handles, colors, target duration all live there.
 
 ```bash
 # 1. pick a topic (see topics.txt for the backlog) and draft it
-python make.py "python generators" --draft
+uv run make.py "python generators" --draft
 
 # 2. watch projects/python_generators/output/FINAL_youtube_ai_voice.mp4
 #    tweak scenes.py or script.json if needed, re-run
 
 # 3. final quality and post
-python make.py "python generators" --hq
+uv run make.py "python generators" --hq
 ```
+
+(No uv? `pip install -r requirements.txt` in a venv still works.)
 
 Flags: `--draft` (fast 480p), `--hq` (1080p60), `--voice none` (silent
 masters + a timed narration sheet so you can record your own voice —
