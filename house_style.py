@@ -83,8 +83,13 @@ def label_chip(text, color=None):
     return VGroup(pill, t)
 
 
-def end_card():
-    """Standard CTA end card — identical on every video = brand memory."""
+def end_card(title=None, subtitle=None, **_ignored):
+    """Standard CTA end card — identical on every video = brand memory.
+
+    Optional: title (small teaser line shown above the card, e.g.
+    "Next: Embeddings"). Any other keyword arguments are ignored so
+    AI-generated scenes can't crash this.
+    """
     follow = Text("Follow for more", font_size=34, color=GREY_B)
     handle = Text(config.INSTA_HANDLE, font_size=52, weight=BOLD,
                   color=config.ACCENT)
@@ -98,4 +103,10 @@ def end_card():
         Dot(radius=0.05, color=config.ACCENT_2).shift(UP * 0.35 + RIGHT * 0.35),
     )
     cam.next_to(g, UP, buff=0.5)
-    return VGroup(cam, g)
+    card = VGroup(cam, g)
+    if title:
+        teaser = Text(str(title), font_size=28, color=config.ACCENT_2)
+        teaser.next_to(card, UP, buff=0.55)
+        card = VGroup(teaser, card)
+        card.move_to(ORIGIN)
+    return card

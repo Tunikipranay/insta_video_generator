@@ -22,7 +22,10 @@ HOUSE RULES (mandatory):
 - Each scene's total run_time must equal its section's "seconds" value (±1s).
   Add self.wait() padding at the end to hit the target.
 - Code shown on screen must be real, runnable Python.
-- S5_CTA must be exactly: FadeIn(end_card()) with a gentle scale, then wait.
+- The CTA scene must be exactly: FadeIn(end_card()) with a gentle scale, then
+  wait. end_card() takes no required arguments — optionally end_card(title=
+  "Next: <topic>") and nothing else. The handles on the card come from
+  config; never write handle text yourself.
 - No external assets, no SVGs, no images, no sounds.
 - glow_dot(point) takes a coordinate like RIGHT*2+UP*1 (a Mobject also works:
   its center is used). Keep default radius.
