@@ -14,7 +14,11 @@ def apply_theme(scene: Scene):
 
 
 def glow_dot(point=ORIGIN, color=None, radius=0.09):
-    """A dot with a soft glow — the signature 3b1b feel."""
+    """A dot with a soft glow — the signature 3b1b feel.
+    Accepts a coordinate or any Mobject (its center is used)."""
+    if isinstance(point, Mobject):
+        point = point.get_center()
+    radius = min(float(radius), 0.35)   # keep glows subtle even if misused
     color = color or config.ACCENT
     layers = VGroup()
     for i, (r, op) in enumerate([(radius * 5, 0.08), (radius * 3, 0.15),

@@ -1,4 +1,16 @@
 """Central configuration for the video factory."""
+import os
+from pathlib import Path
+
+# Load .env (KEY=value lines) so the API key never has to live in shell
+# config or, worse, in git. Real environment variables take precedence.
+_env = Path(__file__).parent / ".env"
+if _env.exists():
+    for _line in _env.read_text().splitlines():
+        _line = _line.strip()
+        if _line and not _line.startswith("#") and "=" in _line:
+            _k, _, _v = _line.partition("=")
+            os.environ.setdefault(_k.strip(), _v.strip())
 
 # ---- Branding ----------------------------------------------------------
 CHANNEL_NAME = "2min AI"             # shown on the end card

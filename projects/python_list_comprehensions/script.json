@@ -1,0 +1,37 @@
+{
+  "topic": "python list comprehensions",
+  "title": "List Comprehensions Are Magic",
+  "hook": "Most Python devs write loops like it's 2005.",
+  "sections": [
+    {
+      "id": "hook",
+      "seconds": 6,
+      "narration": "Most Python devs write loops like it's 2005. But there's a syntax that's faster, cleaner, and honestly just more fun. It's called a list comprehension.",
+      "visual": "Split screen: left side shows a nested for loop creating a list (4 lines of code), right side shows the same thing as a one-liner. Left side code fades to gray, right side glows."
+    },
+    {
+      "id": "concept",
+      "seconds": 22,
+      "narration": "Here's the idea. Instead of looping, creating an empty list, and appending each time, you write the transformation inline. You say what you want, not how to build it step by step. It's declarative. Python reads it left to right, just like English.",
+      "visual": "Animate a simple list comprehension construction: [x * 2 for x in range(5)]. Each part of the bracket notation lights up as it's described. Show the input list [0, 1, 2, 3, 4] flowing through the transformation (x * 2) and outputting [0, 2, 4, 6, 8]. Flow diagram, clean colors."
+    },
+    {
+      "id": "use_case",
+      "seconds": 32,
+      "narration": "Real example. You've got a list of email addresses from a CSV. Some have leading spaces, some are uppercase. You need them clean: lowercase, no whitespace. With a loop, that's five lines and a temp list. With a comprehension? One line. Watch. [email.strip().lower() for email in emails]. That's it. Each email gets stripped and lowercased. The code reads like the requirement itself.",
+      "visual": "Show a data table or list visualization: emails = ['  Alice@Gmail.com', 'bob@YAHOO.com', ' CHARLIE@outlook.com']. Then show the comprehension code on screen: [email.strip().lower() for email in emails]. Animate each email transforming in real-time through the pipeline: spaces vanishing, uppercase becoming lowercase. Result appears below: ['alice@gmail.com', 'bob@yahoo.com', 'charlie@outlook.com']. Highlight the elegance."
+    },
+    {
+      "id": "payoff",
+      "seconds": 10,
+      "narration": "List comprehensions aren't just prettier. They're faster, they're Pythonic, and once you start using them, you'll never go back to loops for simple transformations.",
+      "visual": "Show a comparison badge: 'List comprehension' on one side with a checkmark and speed indicator, 'for loop' on the other with a slower indicator. Fade the loop into the background. Zoom in on the comprehension glowing."
+    },
+    {
+      "id": "cta",
+      "seconds": 5,
+      "narration": "If you wanna see more Python tricks like this, follow the Instagram. New one every week.",
+      "visual": "End card with channel name, Instagram handle, and a brief animation of brackets [ ] floating and reforming. Clean, minimal design."
+    }
+  ]
+}

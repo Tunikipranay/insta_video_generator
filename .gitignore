@@ -13,6 +13,9 @@ venv*/
 __pycache__/
 *.pyc
 
+# secrets — never commit
+.env
+
 # misc
 .DS_Store
 *.tar.bz2

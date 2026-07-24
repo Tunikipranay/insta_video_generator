@@ -24,5 +24,9 @@ HOUSE RULES (mandatory):
 - Code shown on screen must be real, runnable Python.
 - S5_CTA must be exactly: FadeIn(end_card()) with a gentle scale, then wait.
 - No external assets, no SVGs, no images, no sounds.
+- glow_dot(point) takes a coordinate like RIGHT*2+UP*1 (a Mobject also works:
+  its center is used). Keep default radius.
+- Never overlap text: keep titles at to_edge(UP), captions at to_edge(DOWN),
+  and check that chips/labels don't collide with them.
 
 Reply with ONLY the Python code, no markdown fences, no commentary.

@@ -1,0 +1,18 @@
+NARRATION SHEET — python list comprehensions
+Total target: 75s
+Record one take per section; keep each within its time box.
+
+[  0s –   6s]  (hook)
+  Most Python devs write loops like it's 2005. But there's a syntax that's faster, cleaner, and honestly just more fun. It's called a list comprehension.
+
+[  6s –  28s]  (concept)
+  Here's the idea. Instead of looping, creating an empty list, and appending each time, you write the transformation inline. You say what you want, not how to build it step by step. It's declarative. Python reads it left to right, just like English.
+
+[ 28s –  60s]  (use_case)
+  Real example. You've got a list of email addresses from a CSV. Some have leading spaces, some are uppercase. You need them clean: lowercase, no whitespace. With a loop, that's five lines and a temp list. With a comprehension? One line. Watch. [email.strip().lower() for email in emails]. That's it. Each email gets stripped and lowercased. The code reads like the requirement itself.
+
+[ 60s –  70s]  (payoff)
+  List comprehensions aren't just prettier. They're faster, they're Pythonic, and once you start using them, you'll never go back to loops for simple transformations.
+
+[ 70s –  75s]  (cta)
+  If you wanna see more Python tricks like this, follow the Instagram. New one every week.
