@@ -1,8 +1,10 @@
 # 2min_ai video factory 🎬
 
-Turn a topic into a 1–2 minute, 3blue1brown-style animated explainer —
-script, cinematic Manim animation, natural female voiceover, ambient music,
-YouTube (16:9) and Instagram Reels (9:16) exports — with **one command**:
+Turn a topic into **two videos** — a deep, Khan-Academy-style animated
+explainer (~3–4 min, YouTube 16:9) plus a ≤60s teaser (Instagram Reels /
+Shorts 9:16) that funnels viewers to the full video. Script, cinematic
+Manim animation, natural female voiceover at a calm teaching pace, ambient
+music — with **one command**:
 
 ```bash
 python make.py "python decorators"

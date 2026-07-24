@@ -58,7 +58,11 @@ def generate(topic: str) -> Path:
         script = json.loads(raw)
         total = sum(s["seconds"] for s in script["sections"])
         if total > config.MAX_DURATION_SECONDS:
-            raise SystemExit(f"Script too long ({total}s) — regenerate.")
+            raise SystemExit(f"Deep script too long ({total}s) — regenerate.")
+        t_total = sum(s["seconds"] for s in
+                      script.get("teaser", {}).get("sections", []))
+        if t_total > config.TEASER_MAX_SECONDS:
+            raise SystemExit(f"Teaser too long ({t_total}s) — regenerate.")
         script_path.write_text(json.dumps(script, indent=2))
     else:
         p = workdir / "PASTE_ME_script_prompt.txt"
@@ -89,14 +93,18 @@ def generate(topic: str) -> Path:
     # ---- Narration sheet for your voiceover recording --------------------
     script = json.loads(script_path.read_text())
     lines = [f"NARRATION SHEET — {script['topic']}",
-             f"Total target: {sum(s['seconds'] for s in script['sections'])}s",
              "Record one take per section; keep each within its time box.", ""]
-    t = 0
-    for s in script["sections"]:
-        lines.append(f"[{t:>3}s – {t + s['seconds']:>3}s]  ({s['id']})")
-        lines.append(f"  {s['narration']}")
-        lines.append("")
-        t += s["seconds"]
+    for part, secs in [("DEEP VIDEO", script["sections"]),
+                       ("TEASER", script.get("teaser", {}).get("sections", []))]:
+        if not secs:
+            continue
+        lines += [f"== {part} ({sum(s['seconds'] for s in secs)}s) ==", ""]
+        t = 0
+        for s in secs:
+            lines.append(f"[{t:>3}s – {t + s['seconds']:>3}s]  ({s['id']})")
+            lines.append(f"  {s['narration']}")
+            lines.append("")
+            t += s["seconds"]
     (workdir / "narration_sheet.txt").write_text("\n".join(lines))
     print(f"[ok] project ready: {workdir}")
     return workdir

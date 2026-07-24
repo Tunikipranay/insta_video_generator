@@ -18,10 +18,17 @@ INSTA_HANDLE = "@2min_ai"            # CTA on every video
 YOUTUBE_HANDLE = "@2min_ai"
 
 # ---- Video specs -------------------------------------------------------
-MAX_DURATION_SECONDS = 110           # hard cap: under 2 minutes always
-TARGET_DURATION_SECONDS = 75         # sweet spot for retention
+# Deep explainer (YouTube): Khan-Academy pacing — slow, motivated, why-first
+TARGET_DURATION_SECONDS = 210        # ~3.5 minutes
+MAX_DURATION_SECONDS = 260           # hard cap for the deep version
+# Teaser (Instagram Reels / Shorts): hooks viewers toward the full video
+TEASER_MAX_SECONDS = 60
 FPS = 30
 QUALITY = "-qh"                      # -ql 480p (drafts) / -qm 720p / -qh 1080p
+
+# ---- Narrator delivery -------------------------------------------------
+SPEECH_LENGTH_SCALE = 1.08           # >1 = slower, calmer teacher pace
+SPEECH_SENTENCE_SILENCE = 0.4        # seconds of pause between sentences
 
 # ---- Visual house style (3blue1brown-inspired, but your own) -----------
 BG_COLOR = "#0e1116"                 # near-black blue, cinematic

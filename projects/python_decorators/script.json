@@ -1,0 +1,64 @@
+{
+  "topic": "python decorators",
+  "title": "Decorators: Wrapping Functions",
+  "sections": [
+    {
+      "id": "hook",
+      "seconds": 20,
+      "narration": "You've written a function that works. But now you need to time how long it runs. So you add timing code inside it. Then another function needs timing too. So you copy and paste. And then a third one. And suddenly you're maintaining the same timing logic in five different places. There's got to be a better way.",
+      "visual": "Screen shows three functions: greet(), calculate(), fetch_data(). Each has identical timing boilerplate at the start and end (import time, start = time.time(), etc.). The repeated code is highlighted in red, growing more saturated with each function. Text appears: 'Copy-paste everywhere?'"
+    },
+    {
+      "id": "before",
+      "seconds": 40,
+      "narration": "Right now, if you want to add behavior to a function\u2014like timing it, logging it, or checking permissions\u2014you have two choices. One: you edit the function itself and jam the new code in. Two: you wrap the function call in another function every time you use it. Let me show you option two, because it's the pain point. You'd do something like this: instead of calling my_function(), you'd write a wrapper that calls it, checks permissions, then runs the function. Then you do that wrapping everywhere you call it. It works. But it's tedious and error-prone.",
+      "visual": "Split screen. Left side: function definition with timing code mixed in (4-5 lines added). Right side: function call wrapped in manual helper code. Both approaches are labeled. Arrow points from right side to multiple call sites in the codebase, each with similar wrapper code. Visual noise builds to show the repetition burden."
+    },
+    {
+      "id": "concept",
+      "seconds": 60,
+      "narration": "Here's the insight: a decorator is like a mail room at the entrance of a building. When a package arrives\u2014that's your function\u2014the mail room doesn't open it or change it. Instead, it stamps it, scans it, maybe logs where it's going. Then it hands the package along unchanged. The mail room wraps every package the same way, using the same process, without you having to manage that wrapping yourself every time. In Python, a decorator is a function that takes another function\u2014your package\u2014and wraps it. The wrapper does extra stuff before and after your function runs. Then the decorator hands back the wrapped version. From that point on, when you call your function, you're actually calling the wrapped version. The magic part: you don't rewrite the wrapping logic. You define it once, and reuse it on any function you want.",
+      "visual": "Animated mailroom scene. A package (labeled 'your_function') arrives at a window. A mail clerk (decorator function, drawn as a simple character) picks it up. Stamps appear: @timer, @log, @check_permissions\u2014each floating as options. The clerk wraps the package in decorative paper labeled 'wrapper'. The wrapped package is handed back, now with extra properties (visual glow or border). The package passes through unchanged but now has metadata. Text callout: 'Same wrapper logic, applied to many packages.' Show three packages going through same wrapping process in sequence."
+    },
+    {
+      "id": "example",
+      "seconds": 60,
+      "narration": "Let's walk through a real scenario. You're writing a web app. Several endpoints need to check that the user is logged in before they run. Instead of writing that check in every endpoint, you write it once in a decorator. Here's how it works. You define a decorator function\u2014let's call it 'require_login'. This decorator takes your endpoint function as an argument. Inside, you create a wrapper function that checks the user's session. If they're logged in, the wrapper calls the original endpoint. If not, it returns an error. The decorator returns this wrapper. Now, above your endpoint function, you write @require_login. That's it. When you call your endpoint, the wrapper runs first. It checks the session. If you're logged in, your code runs. If not, it stops. Now you have five endpoints, and they all get the same permission check with one line\u2014the @ symbol. The logic lives in one place. If you need to change how login checking works, you edit the decorator once, and all five endpoints update automatically.",
+      "visual": "Code editor view. Show decorator definition in a box: def require_login(func): def wrapper(*args, **kwargs): if not user_logged_in(): return 'Error'. Then show the @require_login line above an endpoint function (highlighted in blue). Arrow from @ symbol to the decorator definition. Then show the endpoint being called three times in different parts of the code. Each call triggers the wrapper first (shown as a gate that opens or closes). One call gets blocked (user not logged in), shown as a red barrier. Another passes through (user logged in), shown as green). Narration walks through one example call step-by-step."
+    },
+    {
+      "id": "recap",
+      "seconds": 20,
+      "narration": "If you remember one thing from this video, remember this: a decorator lets you wrap a function with extra behavior without editing the function itself. It's like that mail room\u2014the wrapper stamps and processes every package the same way, and your package gets handed back working just like before, but now with extra metadata. You define the wrapping logic once, reuse it everywhere, and change it in one place.",
+      "visual": "Return to mailroom visual. Show the process one more time in fast-forward: package arrives, decorator wraps it, multiple wrapped packages leave together. Text overlay: 'Define once. Apply many. Change anywhere.' Fade to a simple icon: function inside a gift box, wrapped with a ribbon. Ribbon is labeled @decorator."
+    },
+    {
+      "id": "cta",
+      "seconds": 8,
+      "narration": "If decorators clicked for you, great. If not, that's normal\u2014they take time to sink in. Try writing your own decorator this week. Pick something simple, like timing a function. The practice will make it stick.",
+      "visual": "Warm closing frame: 'Your turn: write one decorator this week.' Suggest a first project: a simple timer decorator. Khan Academy or 3Blue1Brown style end card\u2014soft color, welcoming tone."
+    }
+  ],
+  "teaser": {
+    "sections": [
+      {
+        "id": "t_hook",
+        "seconds": 8,
+        "narration": "You're copying the same code into function after function. There's a Python feature that lets you write it once and reuse it everywhere. It's called a decorator. But here's the surprising part\u2014it's not about decorating anything.",
+        "visual": "Three functions appear on screen, each with the same block of code copy-pasted. The repeated code flashes red three times. Text question floats: 'Write this logic once. Use it everywhere?' A gift box wraps around one of the functions. Zoom in slightly."
+      },
+      {
+        "id": "t_tease",
+        "seconds": 30,
+        "narration": "A decorator is a function that wraps another function. Think of it like a mail room that processes every package the same way before sending it out. Your function stays the same inside. But now it has superpowers\u2014it can log things, check permissions, time itself, whatever you told the decorator to do. And the best part: you define that wrapping logic once, then slap it onto any function with a single @ symbol. We'll show you exactly how this works, step by step, with real code you'll actually use at work.",
+        "visual": "Animated mailroom again: a package labeled 'function' enters, gets wrapped in decorative paper (visualized as layers of @ symbols spiraling), emerges with a glow. Three more packages go through the same wrapping instantly. Then cut to a code editor showing @decorator above a function definition. Narration syncs with the visual transformation."
+      },
+      {
+        "id": "t_cta",
+        "seconds": 7,
+        "narration": "Full breakdown on our YouTube\u2014link in bio. We'll walk you through why this matters, then build a real example from scratch.",
+        "visual": "End card: channel logo, 'Decorators Explained' title, YouTube button graphic. Soft fade."
+      }
+    ]
+  }
+}

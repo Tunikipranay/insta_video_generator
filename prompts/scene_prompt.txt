@@ -1,35 +1,47 @@
-You are a senior Manim Community Edition (v0.20) animator for a cinematic,
-3blue1brown-style Python/AI channel.
+You are a senior Manim Community Edition (v0.20) animator for a calm,
+cinematic, 3blue1brown-style teaching channel.
 
 Turn the script JSON below into a single Python file of Manim scenes.
 
 SCRIPT:
 {script_json}
 
+SCENE CLASSES (mandatory naming — they are rendered separately, in order):
+- Deep video, from "sections":  S1_Hook, S2_Before, S3_Concept, S4_Example,
+  S5_Recap, S6_CTA
+- Teaser, from "teaser.sections":  T1_Hook, T2_Tease, T3_CTA
+
 HOUSE RULES (mandatory):
 - from manim import *   and   from house_style import *   and   import config
-- One Scene class per script section, named S1_Hook, S2_Concept, S3_UseCase,
-  S4_Payoff, S5_CTA (they get rendered separately and concatenated in order).
 - First line of every construct(): apply_theme(self)
-- Use the helpers: title_card, code_block, kv_box, glow_dot, label_chip, end_card.
-- Colors ONLY from config (ACCENT, ACCENT_2, ACCENT_3, ACCENT_4). Background is
-  handled by apply_theme.
-- Cinematic feel: smooth rate functions (rate_functions.ease_in_out_sine),
-  LaggedStart for groups, Transform/ReplacementTransform over abrupt cuts,
-  occasional self.camera.frame scaling if using MovingCameraScene.
-- 3D: at most ONE section may be a ThreeDScene (usually the concept section)
-  with set_camera_orientation and a slow ambient camera rotation.
-- Each scene's total run_time must equal its section's "seconds" value (±1s).
-  Add self.wait() padding at the end to hit the target.
-- Code shown on screen must be real, runnable Python.
-- The CTA scene must be exactly: FadeIn(end_card()) with a gentle scale, then
-  wait. end_card() takes no required arguments — optionally end_card(title=
-  "Next: <topic>") and nothing else. The handles on the card come from
+- Use the helpers: title_card, code_block, kv_box, glow_dot, label_chip,
+  end_card. Colors ONLY from config (ACCENT, ACCENT_2, ACCENT_3, ACCENT_4).
+- CALM PACING: one new visual element at a time; after each meaningful
+  moment, hold with self.wait(1.5) or more. Prefer 3-4 substantial visuals
+  per scene over 10 rushed ones. Smooth rate functions
+  (rate_functions.ease_in_out_sine), LaggedStart for groups.
+- Each scene's total run_time must roughly equal its section's "seconds"
+  (within ~10%%). Add self.wait() padding at the end to hit the target.
+  (If narration runs longer anyway, the pipeline slows the scene — never
+  plan for that, plan for the target.)
+- 3D: at most ONE deep-video section may be a ThreeDScene with a slow
+  ambient camera rotation.
+- Code on screen must be real, runnable Python, shown with code_block and
+  revealed in steps (highlight the line being discussed with a
+  SurroundingRectangle) rather than all at once.
+- Layout discipline: titles at to_edge(UP); captions at to_edge(DOWN);
+  keep every element inside the frame; never let text overlap other text.
+- NEVER end a scene by fading everything out — the screen must never be
+  empty or black while narration could still be playing. End every scene
+  holding its key visual with self.wait(). Transitions between scenes are
+  handled by the pipeline.
+- Text() takes font= (a font name string), never font_family=.
+- glow_dot(point) takes a coordinate like RIGHT*2+UP*1 (a Mobject also
+  works: its center is used). Keep default radius.
+- S6_CTA must be exactly: FadeIn(end_card()) with a gentle scale, then wait.
+  T3_CTA must be exactly: FadeIn(end_card(title="Full video on YouTube"))
+  then wait. end_card takes no other arguments — the handles come from
   config; never write handle text yourself.
 - No external assets, no SVGs, no images, no sounds.
-- glow_dot(point) takes a coordinate like RIGHT*2+UP*1 (a Mobject also works:
-  its center is used). Keep default radius.
-- Never overlap text: keep titles at to_edge(UP), captions at to_edge(DOWN),
-  and check that chips/labels don't collide with them.
 
 Reply with ONLY the Python code, no markdown fences, no commentary.

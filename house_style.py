@@ -42,8 +42,13 @@ def title_card(text, sub=None):
     return g
 
 
-def code_block(code_str, language="python", font_size=26):
-    """Dark rounded code window with traffic-light dots."""
+def code_block(code_str, language="python", font_size=26, lang=None,
+               **_ignored):
+    """Dark rounded code window with traffic-light dots.
+    Accepts lang= as an alias; unknown kwargs are ignored so AI-generated
+    scenes can't crash this."""
+    if lang:
+        language = lang
     code = Code(
         code_string=code_str,
         language=language,

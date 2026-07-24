@@ -53,8 +53,8 @@ def main():
     voice = None if args.voice == "ai" else args.voice
     voiceover_ai.main(workdir, voice)
     print(f"\nDone. Publish these:\n"
-          f"  {workdir}/output/FINAL_youtube_ai_voice.mp4\n"
-          f"  {workdir}/output/FINAL_instagram_ai_voice.mp4\n"
+          f"  {workdir}/output/FINAL_youtube_ai_voice.mp4   (deep explainer)\n"
+          f"  {workdir}/output/FINAL_instagram_teaser.mp4   (reel -> YouTube)\n"
           f"Tip: watch it once before posting — if a scene needs a tweak, "
           f"edit {workdir}/scenes.py and re-run this command.")
 
