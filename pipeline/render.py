@@ -27,7 +27,14 @@ def run(cmd, **kw):
     print("$", " ".join(str(c) for c in cmd))
     env = dict(os.environ)
     env["PYTHONPATH"] = str(ROOT) + os.pathsep + env.get("PYTHONPATH", "")
-    subprocess.run([str(c) for c in cmd], check=True, env=env, **kw)
+    p = subprocess.run([str(c) for c in cmd], env=env,
+                       capture_output=True, text=True, **kw)
+    if p.returncode != 0:
+        tail = "\n".join(((p.stdout or "") + "\n" + (p.stderr or ""))
+                         .strip().splitlines()[-40:])
+        print(tail)
+        raise subprocess.CalledProcessError(p.returncode, p.args,
+                                            output=p.stdout, stderr=p.stderr)
 
 
 VERTICAL_VF = ("split[a][b];"

@@ -17,7 +17,7 @@ import config  # noqa: E402
 
 
 def _slug(topic: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "_", topic.lower()).strip("_")
+    return re.sub(r"[^a-z0-9]+", "_", topic.lower()).strip("_")[:48].rstrip("_")
 
 
 def _call_claude(prompt: str) -> str:
@@ -77,10 +77,11 @@ def generate(topic: str) -> Path:
         print(f"[skip] {scenes_path} already exists")
     elif have_key:
         print("[ai] writing Manim scenes")
+        from pipeline.repair import sanitize
         scene_prompt = (ROOT / "prompts" / "scene_prompt.txt").read_text().format(
             script_json=script_path.read_text())
         code = _strip_fences(_call_claude(scene_prompt))
-        scenes_path.write_text(code)
+        scenes_path.write_text(sanitize(code))
     else:
         scene_prompt = (ROOT / "prompts" / "scene_prompt.txt").read_text().format(
             script_json=script_path.read_text())

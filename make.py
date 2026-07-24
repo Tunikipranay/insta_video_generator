@@ -12,6 +12,8 @@ Without it, the prompts are saved to files — paste them into claude.ai
 (free), save the replies where instructed, and re-run the same command.
 """
 import argparse
+import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -20,6 +22,7 @@ sys.path.insert(0, str(ROOT))
 from pipeline.generate import generate            # noqa: E402
 from pipeline.render import render                # noqa: E402
 from pipeline import voiceover_ai                 # noqa: E402
+from pipeline.repair import repair, sanitize      # noqa: E402
 
 
 def main():
@@ -41,8 +44,29 @@ def main():
     if not (workdir / "scenes.py").exists():
         return  # manual mode: instructions were printed; re-run when saved
 
-    # 2. render animation + build 16:9 / 9:16 silent masters
-    render(workdir, quality)
+    # 2. render animation + build silent masters — with self-repair:
+    # if AI-written scene code crashes, static-sanitize first, then ask
+    # the model to fix its own bug and retry (twice at most).
+    scenes_path = workdir / "scenes.py"
+    for attempt in range(3):
+        try:
+            render(workdir, quality)
+            break
+        except subprocess.CalledProcessError as e:
+            err = ((e.output or "") + "\n" + (e.stderr or "")).strip()
+            if attempt == 0:
+                cleaned = sanitize(scenes_path.read_text())
+                if cleaned != scenes_path.read_text():
+                    print("[repair] applied static API fixes, retrying...")
+                    scenes_path.write_text(cleaned)
+                    continue
+            if attempt == 2 or not os.environ.get("ANTHROPIC_API_KEY"):
+                raise SystemExit(
+                    "Scene render failed. Fix the error above in "
+                    f"{scenes_path} and re-run.")
+            print("[repair] scene code crashed — asking the AI to fix it...")
+            if not repair(scenes_path, err):
+                raise SystemExit(f"Auto-repair failed; fix {scenes_path} manually.")
 
     # 3. audio
     if args.voice == "none":
