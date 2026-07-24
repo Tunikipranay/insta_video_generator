@@ -1,0 +1,4 @@
+manim>=0.20
+scipy>=1.10
+anthropic>=0.40
+piper-tts>=1.2

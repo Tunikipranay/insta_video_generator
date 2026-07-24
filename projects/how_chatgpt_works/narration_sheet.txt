@@ -1,0 +1,21 @@
+NARRATION SHEET — How ChatGPT works (series intro / episode 1)
+Total target: 75s
+Record one take per section; keep each within its time box.
+
+[  0s –   9s]  (hook)
+  ChatGPT has no idea what it's saying. Seriously. It's doing one thing, over and over: guessing the next word. Here's the whole trick, in one minute.
+
+[  9s –  25s]  (tokens)
+  Step one: your message gets chopped into tokens. Not words — chunks. Watch: chatgpt becomes two tokens. And every token is turned into a long list of numbers, because neural networks only speak math.
+
+[ 25s –  40s]  (transformer)
+  Step two: those numbers flow up through a transformer — a giant stack of layers where every token looks at every other token and asks: who matters for what comes next? That's the famous attention mechanism.
+
+[ 40s –  57s]  (predict)
+  Step three: out comes a probability for every possible next token. The capital of France is... Paris, ninety-two percent. It picks one, sticks it on the end, and runs the whole loop again. That's it. And notice — it ranks likely words. It never checks facts. That's exactly why it can be confidently wrong.
+
+[ 57s –  70s]  (roadmap)
+  So that was the ten-thousand-foot view. Coming up in this series: tokenizers — why AI can't spell. Embeddings — how meaning becomes math. And attention — the hundred-billion-dollar idea.
+
+[ 70s –  75s]  (cta)
+  Follow so you don't miss episode two.

@@ -1,0 +1,18 @@
+NARRATION SHEET — Python dictionaries
+Total target: 75s
+Record one take per section; keep each within its time box.
+
+[  0s –   8s]  (hook)
+  Your Python code is slow, and it's probably because you're searching lists. Watch this: to find one item, a list checks every single box. A dict? It just... knows.
+
+[  8s –  33s]  (concept)
+  Here's the magic. When you store a value under a key, Python runs the key through a hash function. That's just a machine that turns your key into a number. And that number is literally the address where your value gets parked. So when you ask for it later, Python doesn't search. It recomputes the number and jumps straight there. That's why lookups take the same time with ten items or ten million.
+
+[ 33s –  59s]  (use_case)
+  Real use case: you're counting votes. With a list you'd loop over candidates for every single ballot. With a dict, it's three lines. For each name, get its current count, add one, done. Every ballot is one instant lookup. A million votes? Still one pass, no nested loops, no waiting.
+
+[ 59s –  70s]  (payoff)
+  So here's the rule: the moment you need to look things up by name, id, or key... stop reaching for a list. Reach for a dict.
+
+[ 70s –  75s]  (cta)
+  Next up: decorators, the feature that feels illegal. Follow so you don't miss it.

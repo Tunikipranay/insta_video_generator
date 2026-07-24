@@ -1,0 +1,37 @@
+{
+  "topic": "Python dictionaries",
+  "title": "Python Dicts",
+  "hook": "Your Python code is slow, and it's probably because you're searching lists.",
+  "sections": [
+    {
+      "id": "hook",
+      "seconds": 8,
+      "narration": "Your Python code is slow, and it's probably because you're searching lists. Watch this: to find one item, a list checks every single box. A dict? It just... knows.",
+      "visual": "A row of list cells scanned one by one by a red glowing dot (slow), versus a dict where a green glow snaps straight to the answer instantly."
+    },
+    {
+      "id": "concept",
+      "seconds": 25,
+      "narration": "Here's the magic. When you store a value under a key, Python runs the key through a hash function. That's just a machine that turns your key into a number. And that number is literally the address where your value gets parked. So when you ask for it later, Python doesn't search. It recomputes the number and jumps straight there. That's why lookups take the same time with ten items or ten million.",
+      "visual": "3D scene: a key flies into a rotating cube (the hash machine), a number pops out, and a glowing dot travels directly to one bucket in a row of buckets where the key-value pair lands."
+    },
+    {
+      "id": "use_case",
+      "seconds": 26,
+      "narration": "Real use case: you're counting votes. With a list you'd loop over candidates for every single ballot. With a dict, it's three lines. For each name, get its current count, add one, done. Every ballot is one instant lookup. A million votes? Still one pass, no nested loops, no waiting.",
+      "visual": "Code block with the votes counting loop; ballot names stream in and key-value boxes update their counts live, winner gets highlighted."
+    },
+    {
+      "id": "payoff",
+      "seconds": 11,
+      "narration": "So here's the rule: the moment you need to look things up by name, id, or key... stop reaching for a list. Reach for a dict.",
+      "visual": "A race: list dot crawls at O(n) while dict dot teleports at O(1). Takeaway text appears."
+    },
+    {
+      "id": "cta",
+      "seconds": 5,
+      "narration": "Next up: decorators, the feature that feels illegal. Follow so you don't miss it.",
+      "visual": "Standard end card with Instagram handle."
+    }
+  ]
+}

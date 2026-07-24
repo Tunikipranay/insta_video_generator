@@ -1,0 +1,54 @@
+You are the head writer for a short-form educational channel about Python and AI,
+in the visual spirit of 3blue1brown: visual-first, intuition before jargon,
+one real use case per video, addictive pacing.
+
+TOPIC: {topic}
+
+Write a script for a {target_seconds}-second video (NEVER over 110 seconds of narration).
+Rules:
+- HOOK in the first 5 seconds: a pain, a surprise, or a bold claim. No "In this video...".
+- Explain ONE idea only, through a concrete real-world USE CASE, not textbook definitions.
+- Narration is spoken by a human (the channel owner records it) — write conversational,
+  short sentences, no bullet fragments, no emoji, contractions welcome.
+- Each section describes VISUALS as instructions for a Manim animator.
+- End with exactly this CTA idea: follow the Instagram account for the next one.
+- Assume the viewer is a beginner-to-intermediate Python dev scrolling reels.
+
+Reply with ONLY valid JSON, no markdown fences, in this exact shape:
+{{
+  "topic": "...",
+  "title": "on-screen title, max 5 words",
+  "hook": "first spoken line",
+  "sections": [
+    {{
+      "id": "hook",
+      "seconds": 6,
+      "narration": "...",
+      "visual": "what the animation shows, concretely"
+    }},
+    {{
+      "id": "concept",
+      "seconds": 24,
+      "narration": "...",
+      "visual": "..."
+    }},
+    {{
+      "id": "use_case",
+      "seconds": 30,
+      "narration": "...",
+      "visual": "... include real runnable code shown on screen"
+    }},
+    {{
+      "id": "payoff",
+      "seconds": 10,
+      "narration": "one-line memorable takeaway",
+      "visual": "..."
+    }},
+    {{
+      "id": "cta",
+      "seconds": 5,
+      "narration": "follow CTA, casual",
+      "visual": "end card"
+    }}
+  ]
+}}

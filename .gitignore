@@ -1,0 +1,18 @@
+# build artifacts
+projects/*/media/
+projects/*/output/
+projects/*/voiceover.*
+smoke/
+
+# downloaded / generated assets (recreate with setup.sh)
+tts/
+music/*.wav
+
+# python
+venv*/
+__pycache__/
+*.pyc
+
+# misc
+.DS_Store
+*.tar.bz2

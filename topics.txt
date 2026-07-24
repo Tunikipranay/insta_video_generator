@@ -1,0 +1,21 @@
+# Content backlog — one per line. Mix evergreen Python + trending AI.
+# Python core (evergreen, high search volume)
+python dictionaries — why they are O(1) and when lists betray you
+python list comprehensions — replace 10 lines with 1
+python decorators — add superpowers to any function
+python type annotations — catch bugs before running
+python generators — process 10GB files in 10MB of RAM
+python context managers — the with statement explained
+python f-strings tricks nobody uses
+python args and kwargs finally explained
+marshmallow — validate API data like a pro
+dataclasses vs pydantic vs attrs
+
+# AI / trending (refresh monthly — check what's hot)
+what is RAG — why every AI startup uses it
+embeddings — how AI understands meaning
+fine-tuning vs prompting — which one you actually need
+AI agents — programs that use tools
+vector databases in 90 seconds
+MCP — how AI connects to your apps
+tokenizers — why AI can't spell

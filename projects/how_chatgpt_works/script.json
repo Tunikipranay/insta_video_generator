@@ -1,0 +1,43 @@
+{
+  "topic": "How ChatGPT works (series intro / episode 1)",
+  "title": "How ChatGPT Works",
+  "hook": "ChatGPT has no idea what it's saying.",
+  "sections": [
+    {
+      "id": "hook",
+      "seconds": 9,
+      "narration": "ChatGPT has no idea what it's saying. Seriously. It's doing one thing, over and over: guessing the next word. Here's the whole trick, in one minute.",
+      "visual": "A chat window: a user asks something, the reply appears word by word, then the animation freezes and shows the model choosing between candidate next words with percentages."
+    },
+    {
+      "id": "tokens",
+      "seconds": 16,
+      "narration": "Step one: your message gets chopped into tokens. Not words \u2014 chunks. Watch: chatgpt becomes two tokens. And every token is turned into a long list of numbers, because neural networks only speak math.",
+      "visual": "A sentence splits into colored token chips; 'chatgpt' visibly splits into 'chat' + 'gpt'; each chip pours a small column of numbers below it."
+    },
+    {
+      "id": "transformer",
+      "seconds": 15,
+      "narration": "Step two: those numbers flow up through a transformer \u2014 a giant stack of layers where every token looks at every other token and asks: who matters for what comes next? That's the famous attention mechanism.",
+      "visual": "3D: glowing token dots below a translucent stack of layers; a web of attention lines connects every token to every other; a spark rises through the stack; slow camera orbit."
+    },
+    {
+      "id": "predict",
+      "seconds": 17,
+      "narration": "Step three: out comes a probability for every possible next token. The capital of France is... Paris, ninety-two percent. It picks one, sticks it on the end, and runs the whole loop again. That's it. And notice \u2014 it ranks likely words. It never checks facts. That's exactly why it can be confidently wrong.",
+      "visual": "Prompt with a blank; a ranked bar chart of candidate words with probabilities; Paris wins and flies into the blank; a loop arrow labeled 'repeat'; warning caption about facts."
+    },
+    {
+      "id": "roadmap",
+      "seconds": 13,
+      "narration": "So that was the ten-thousand-foot view. Coming up in this series: tokenizers \u2014 why AI can't spell. Embeddings \u2014 how meaning becomes math. And attention \u2014 the hundred-billion-dollar idea.",
+      "visual": "Three episode cards slide in: EP2 Tokenizers, EP3 Embeddings, EP4 Attention, each with a one-line teaser."
+    },
+    {
+      "id": "cta",
+      "seconds": 5,
+      "narration": "Follow so you don't miss episode two.",
+      "visual": "Standard end card."
+    }
+  ]
+}
