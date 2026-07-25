@@ -20,14 +20,16 @@ def _slug(topic: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", topic.lower()).strip("_")[:48].rstrip("_")
 
 
-def _call_claude(prompt: str) -> str:
+def _call_claude(prompt: str, max_tokens: int = 24000) -> str:
     import anthropic  # pip install anthropic
     client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY
     msg = client.messages.create(
         model=config.AI_MODEL,
-        max_tokens=8000,
+        max_tokens=max_tokens,
         messages=[{"role": "user", "content": prompt}],
     )
+    if msg.stop_reason == "max_tokens":
+        print(f"[warn] reply hit the {max_tokens}-token limit and was cut off")
     return msg.content[0].text
 
 
@@ -77,11 +79,26 @@ def generate(topic: str) -> Path:
         print(f"[skip] {scenes_path} already exists")
     elif have_key:
         print("[ai] writing Manim scenes")
-        from pipeline.repair import sanitize
+        from pipeline.repair import sanitize, validate
         scene_prompt = (ROOT / "prompts" / "scene_prompt.txt").read_text().format(
             script_json=script_path.read_text())
-        code = _strip_fences(_call_claude(scene_prompt))
-        scenes_path.write_text(sanitize(code))
+        prompt, code = scene_prompt, None
+        for attempt in range(3):
+            code = sanitize(_strip_fences(_call_claude(prompt)))
+            problem = validate(code)
+            if problem is None:
+                break
+            print(f"[retry {attempt + 1}/3] scene code rejected: {problem}")
+            prompt = (scene_prompt +
+                      f"\n\nA previous attempt was rejected: {problem}\n"
+                      "Write the complete file, all nine scene classes, "
+                      "in full.")
+        else:
+            (workdir / "scenes_rejected.py").write_text(code)
+            raise SystemExit(
+                "The model could not produce a valid scenes.py in 3 tries. "
+                f"Last attempt saved to {workdir / 'scenes_rejected.py'}.")
+        scenes_path.write_text(code)
     else:
         scene_prompt = (ROOT / "prompts" / "scene_prompt.txt").read_text().format(
             script_json=script_path.read_text())

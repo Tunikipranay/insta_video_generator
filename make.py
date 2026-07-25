@@ -22,7 +22,7 @@ sys.path.insert(0, str(ROOT))
 from pipeline.generate import generate            # noqa: E402
 from pipeline.render import render                # noqa: E402
 from pipeline import voiceover_ai                 # noqa: E402
-from pipeline.repair import repair, sanitize      # noqa: E402
+from pipeline.repair import repair, sanitize, validate   # noqa: E402
 
 
 def main():
@@ -48,6 +48,17 @@ def main():
     # if AI-written scene code crashes, static-sanitize first, then ask
     # the model to fix its own bug and retry (twice at most).
     scenes_path = workdir / "scenes.py"
+
+    # A scenes.py carried over from an earlier run (or hand-edited) may be
+    # truncated or missing classes — catch that before manim does.
+    problem = validate(scenes_path.read_text())
+    if problem:
+        print(f"[check] existing scenes.py is not usable: {problem}")
+        if not os.environ.get("ANTHROPIC_API_KEY") or not repair(
+                scenes_path, problem):
+            raise SystemExit(
+                f"Delete {scenes_path} and re-run to regenerate it.")
+
     for attempt in range(3):
         try:
             render(workdir, quality)

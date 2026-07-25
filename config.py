@@ -38,6 +38,21 @@ ACCENT_3 = "#FC6255"                 # red for "slow / wrong"
 ACCENT_4 = "#83C167"                 # green for "fast / right"
 TEXT_COLOR = "#ECECEC"
 CODE_FONT = "DejaVu Sans Mono"
+FONT_NAME = "DejaVu Sans"            # body text font
+
+# ---- Compatibility shims ------------------------------------------------
+# Scene files do `from manim import *` and then `import config`, so this
+# module shadows Manim's own global `config`. AI-written scenes reach for
+# frame geometry through that name; mirror Manim's 16:9 defaults here so
+# those references resolve instead of crashing the render.
+frame_width = 14.222222222222221
+frame_height = 8.0
+frame_x_radius = frame_width / 2
+frame_y_radius = frame_height / 2
+FRAME_WIDTH = frame_width
+FRAME_HEIGHT = frame_height
+pixel_width = 1920
+pixel_height = 1080
 
 # ---- AI script generation ---------------------------------------------
 # Set the env var ANTHROPIC_API_KEY to enable automatic generation.

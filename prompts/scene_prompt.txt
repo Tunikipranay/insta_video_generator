@@ -44,6 +44,16 @@ HOUSE RULES (mandatory):
 - Abstract or historical topics: prefer concrete devices — a horizontal
   timeline with year labels and event cards, labeled before/after panels,
   a growing list of named milestones — over abstract shape metaphors.
+- `config` here is THIS PROJECT's config.py — NOT Manim's global config.
+  The only names on it are: CHANNEL_NAME, INSTA_HANDLE, YOUTUBE_HANDLE,
+  BG_COLOR, ACCENT, ACCENT_2, ACCENT_3, ACCENT_4, TEXT_COLOR, CODE_FONT,
+  FONT_NAME, FPS. Never write config.frame_width, config.frame_height or
+  any other Manim setting. For sizing and placement use the Manim constants
+  (ORIGIN, UP, DOWN, LEFT, RIGHT, UL...), .to_edge(), .next_to(),
+  .scale_to_fit_width() — not frame numbers.
+- Never draw a full-frame black or background-coloured Rectangle to "hold"
+  or "clear" the screen. There is no such thing as a hold-black shot in
+  this house style.
 - Text() takes font= (a font name string), never font_family=.
 - glow_dot(point) takes a coordinate like RIGHT*2+UP*1 (a Mobject also
   works: its center is used). Keep default radius.
