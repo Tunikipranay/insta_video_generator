@@ -1,0 +1,64 @@
+{
+  "topic": "Introduction to AI: How It Actually Works",
+  "title": "How AI Really Works",
+  "sections": [
+    {
+      "id": "hook",
+      "seconds": 20,
+      "narration": "You've probably asked a chatbot a question and gotten a weirdly human answer back. And you wondered: how does it know what to say? It's not looking things up in a database. It's not following a script. So what is it actually doing? Today, we're going to see inside that black box.",
+      "visual": "Open on a smartphone screen. A person types a question into a chatbot: 'What's a good bedtime routine?' The response appears word by word. Zoom in on the words as they appear. Pause. Then fade to black with a question mark that slowly grows."
+    },
+    {
+      "id": "before",
+      "seconds": 40,
+      "narration": "Before AI, if you wanted a computer to help you, you had to write down every single rule it should follow. You'd say: if the user types X, output Y. If they say Z, do this other thing. You're basically writing a massive instruction manual. And it works fine... until someone asks something you didn't predict. Then the computer just breaks. It's like hiring someone who can only follow the exact script you gave them.",
+      "visual": "Show a flowchart with dozens of branching if-then rules, getting messier and more tangled. Each branch splits again. Lines cross and tangle. A person's face appears, looking frustrated, holding papers. The stack of papers grows taller and taller until it topples over. Text appears: 'What about the questions we didn't think of?'"
+    },
+    {
+      "id": "concept",
+      "seconds": 60,
+      "narration": "Here's the key insight: instead of writing rules, we're going to build something that learns patterns from examples. Think of it like training a mail sorter. You don't tell the mail sorter the rule 'if it has a stamp from Boston, it goes to the Northeast bin.' Instead, you show them hundreds of letters. They watch. They notice patterns. They see which features matter: the zip code, the envelope shape, the ink color. After seeing enough examples, they can sort new letters they've never seen before. That's what AI does. It learns patterns from data instead of following explicit rules. We call this 'training.' The patterns it finds, we call a 'model.' And the features it notices\u2014like 'words that often go together'\u2014those are called 'weights.' The model is just a bunch of learned weights. When you ask it a question, it uses all those learned patterns to predict the next word. Then the next one. Then the next one. Building your answer piece by piece.",
+      "visual": "MAILROOM ANALOGY IN MOTION: Show a mail sorter standing in front of stacks of letters. One by one, show letters being handed over\u2014each labeled with features (zip code, size, color). The sorter points and notices patterns. Overlay transparent highlight boxes around repeating features. After many examples (quick montage), the sorter nods confidently. Then a NEW letter arrives that they've never seen. They sort it smoothly. Text appears and persists: 'Learning from examples \u2192 Finding patterns \u2192 Predicting on new data.' Below it, map it to AI: 'Training data \u2192 Model weights \u2192 AI response.' Keep both visible for 10 seconds."
+    },
+    {
+      "id": "example",
+      "seconds": 60,
+      "narration": "Let's watch this happen in real code. A programmer is building a chatbot that predicts the next word in customer service replies. They have a dataset of ten thousand past support conversations. Step one: they load that data. Step two: they create a model\u2014just an empty container with random weights. Step three is where the magic happens. They show the model a sentence from the dataset: 'The customer reported a problem with.' The model guesses what word comes next. It guesses 'cat.' That's wrong. The right answer is 'payment.' So the model adjusts its weights slightly. Not by a human manually editing them\u2014automatically, by math. Then it sees the next sentence and adjusts again. And again. After seeing all ten thousand sentences multiple times, the weights have shifted. Now when you give it 'The customer reported a problem with,' it predicts 'payment' with high confidence. That's training. When you actually use the chatbot, you're not training anymore\u2014those weights are frozen. You type something new. The model runs through its learned patterns and outputs the next word. You continue the conversation. Same process, word by word.",
+      "visual": "Code editor view (clean, large font). Show: data_load(conversations). Then: model = create_model(). User types: 'The customer reported a problem with'. Model output appears in red: 'cat'. Then highlight the word 'payment' in green\u2014the correct answer. Draw a curved arrow from the error back into the model, labeled 'adjust weights.' Show this loop 3 times quickly, then slow down. Show the model's confidence rising (a graph bar slowly filling). Finally, show a user chatting with the trained model, and it confidently outputs 'payment' when given the same prefix. Pause on that moment."
+    },
+    {
+      "id": "recap",
+      "seconds": 20,
+      "narration": "If you remember one thing from this video, remember this: AI isn't magic, and it isn't following a hidden rulebook. It's a system that learned patterns by looking at examples\u2014just like our mail sorter learned from letters. It builds answers by predicting one piece at a time, using everything it learned. The weights are the patterns. The training is just showing it examples and letting math adjust those patterns. That's the whole thing.",
+      "visual": "Show the mail sorter and the AI model side by side, with a double arrow between them labeled 'same idea.' Show the full journey one more time, very fast: data \u2192 patterns learned \u2192 prediction on new input. Fade to a calm, solid color."
+    },
+    {
+      "id": "cta",
+      "seconds": 8,
+      "narration": "If you want to go deeper\u2014build your own model, see the math behind the weights, or understand why sometimes AI gets things wrong\u2014we've got full tutorials coming. Subscribe so you don't miss them.",
+      "visual": "End card with channel name, subscribe button animation (grows slightly), and a preview thumbnail of the next video in the series."
+    }
+  ],
+  "teaser": {
+    "sections": [
+      {
+        "id": "t_hook",
+        "seconds": 8,
+        "narration": "Your AI chatbot isn't looking up answers in a database. It's not following a script someone wrote. So what's it actually doing?",
+        "visual": "Show a smartphone typing a question into a chatbot. Words appear in the response. Zoom in with a confused expression overlay. Fade to a large question mark."
+      },
+      {
+        "id": "t_tease",
+        "seconds": 30,
+        "narration": "Here's the thing: it learned by watching thousands of examples. Not by reading rules. Imagine training a mail sorter by just showing them letters. They never memorize the rules\u2014they notice patterns. After enough examples, they can sort anything. That's exactly what AI does. It learns patterns from data, then predicts one piece at a time. No magic. Just math that noticed patterns you didn't have to write down. And in our full video, we walk through actual code and show you exactly how that works.",
+        "visual": "Quick cuts: mail sorter seeing letters (features highlighted). Then cut to code editor with training loop. Then chatbot predicting words. Text appears: 'Learning from examples. Not rules. Not magic.' Fade to title card."
+      },
+      {
+        "id": "t_cta",
+        "seconds": 7,
+        "narration": "The full breakdown is on our YouTube\u2014link in the description. Come see inside.",
+        "visual": "End card with video title, channel name, and YouTube subscribe button. Warm, minimal design."
+      }
+    ]
+  }
+}

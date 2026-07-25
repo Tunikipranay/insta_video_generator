@@ -24,20 +24,148 @@ ALIASES = [
     (r"(?<=[(,\s])size\s*=", "font_size="),
     (r"(?<=[(,\s])text_size\s*=", "font_size="),
     (r"\bScene\.play\b", "self.play"),
+    # weight must be the BOLD/NORMAL constant, not a string
+    (r"weight\s*=\s*['\"](?i:bold)['\"]", "weight=BOLD"),
+    (r"weight\s*=\s*['\"](?i:normal)['\"]", "weight=NORMAL"),
 ]
+
+# kwargs the model invents that no Manim mobject accepts — delete them
+DROP_KWARGS = ["text_align", "align", "curve", "text_color", "bg_color",
+               "font_weight", "line_width", "border_radius"]
 
 # scene classes the pipeline expects, by number prefix
 REQUIRED_PREFIXES = ["S1_", "S2_", "S3_", "S4_", "S5_", "S6_",
                      "T1_", "T2_", "T3_"]
 
 
+# Anything below this is unreadable on a phone screen. The model keeps
+# writing font_size=12; raise it mechanically rather than hoping.
+MIN_FONT_SIZE = 24
+
+
+def _bump_font(m: re.Match) -> str:
+    return (m.group(0) if int(m.group(1)) >= MIN_FONT_SIZE
+            else f"font_size={MIN_FONT_SIZE}")
+
+
 def sanitize(code: str) -> str:
     for pat, rep in ALIASES:
         code = re.sub(pat, rep, code)
+    for kw in DROP_KWARGS:
+        code = re.sub(rf"(?<=[(,\s]){kw}\s*=\s*[^,()]+,?\s*", "", code)
+    code = re.sub(r"font_size\s*=\s*(\d+)", _bump_font, code)
     return code
 
 
-def validate(code: str) -> str | None:
+def _literal(node, default=None):
+    try:
+        return ast.literal_eval(node)
+    except Exception:
+        return default
+
+
+def _loop_count(node: ast.For) -> int:
+    it = node.iter
+    if isinstance(it, ast.Call) and getattr(it.func, "id", "") == "range":
+        args = [_literal(a) for a in it.args]
+        if all(isinstance(a, int) for a in args):
+            return max(len(range(*args)), 1)
+    if isinstance(it, (ast.List, ast.Tuple)):
+        return max(len(it.elts), 1)
+    return 1                                # unknown: count it once
+
+
+def _body_seconds(body, mult=1) -> float:
+    """Rough on-screen duration of a list of statements."""
+    total = 0.0
+    for node in body:
+        if isinstance(node, ast.For):
+            total += _body_seconds(node.body, _loop_count(node))
+        elif isinstance(node, (ast.If, ast.With, ast.While)):
+            total += _body_seconds(node.body)
+        elif isinstance(node, ast.Expr) and isinstance(node.value, ast.Call):
+            call = node.value
+            name = getattr(call.func, "attr", "")
+            if name not in ("play", "wait"):
+                continue
+            kw = {k.arg: _literal(k.value) for k in call.keywords}
+            if name == "wait":
+                secs = _literal(call.args[0], 1.0) if call.args else 1.0
+            else:
+                secs = kw.get("run_time", 1.0)
+            total += float(secs if isinstance(secs, (int, float)) else 1.0)
+    return total * mult
+
+
+def estimate_scene_seconds(code: str) -> dict:
+    """Static estimate of how long each scene will run, before rendering.
+
+    Cheap insurance against the model writing a 15-second animation for a
+    60-second narration — which the audio stage can only paper over with a
+    long frozen frame.
+    """
+    out = {}
+    for node in ast.walk(ast.parse(code)):
+        if not isinstance(node, ast.ClassDef):
+            continue
+        for f in node.body:
+            if isinstance(f, ast.FunctionDef) and f.name == "construct":
+                out[node.name] = _body_seconds(f.body)
+    return out
+
+
+MAX_HOLD = 6.0          # longest a single held frame may become
+PAD_GOAL = 0.9          # aim slightly under target; a mild stretch is free
+                        # and overshooting leaves silence at the scene end
+
+
+def pad_to_targets(code: str, targets: dict) -> str:
+    """Lengthen existing holds so each scene covers its narration.
+
+    The model reliably writes scenes shorter than their narration. Rather
+    than freeze the last frame for half a minute at the end, spread the
+    missing time over the pauses the scene already has, so the picture is
+    always a deliberate hold on something relevant.
+    """
+    try:
+        tree = ast.parse(code)
+    except SyntaxError:
+        return code
+    lines = code.splitlines()
+    edits = []
+    for cls in tree.body:
+        if not isinstance(cls, ast.ClassDef):
+            continue
+        secs = next((v for p, v in targets.items() if cls.name.startswith(p)),
+                    None)
+        if secs is None:
+            continue
+        construct = next((f for f in cls.body if isinstance(f, ast.FunctionDef)
+                          and f.name == "construct"), None)
+        if construct is None:
+            continue
+        deficit = secs * PAD_GOAL - _body_seconds(construct.body)
+        waits = [n for n in construct.body
+                 if isinstance(n, ast.Expr) and isinstance(n.value, ast.Call)
+                 and getattr(n.value.func, "attr", "") == "wait"
+                 and n.lineno == n.end_lineno]
+        if deficit < 1 or not waits:
+            continue
+        share = deficit / len(waits)
+        for w in waits:
+            cur = (_literal(w.value.args[0], 1.0) if w.value.args else 1.0)
+            if not isinstance(cur, (int, float)):
+                continue
+            new = round(min(cur + share, MAX_HOLD), 1)
+            if new > cur:
+                indent = " " * w.col_offset
+                edits.append((w.lineno - 1, f"{indent}self.wait({new})"))
+    for idx, text in sorted(edits, reverse=True):
+        lines[idx] = text
+    return "\n".join(lines) + "\n"
+
+
+def validate(code: str, targets: dict | None = None) -> str | None:
     """Return a human-readable problem with the scene file, or None if OK.
 
     Catches the two failure modes that used to reach the renderer: a reply
@@ -62,6 +190,22 @@ def validate(code: str) -> str | None:
             if not any(isinstance(f, ast.FunctionDef) and f.name == "construct"
                        for f in n.body):
                 return f"Class {n.name} has no construct(self) method."
+    if targets:
+        # targets are keyed by class-name prefix ("S3_") -> narration seconds
+        est = estimate_scene_seconds(code)
+        short = []
+        for prefix, secs in targets.items():
+            for name, e in est.items():
+                if name.startswith(prefix) and e < 0.8 * secs:
+                    short.append((name, e, secs))
+        if short:
+            detail = "; ".join(
+                f"{n} runs ~{e:.0f}s but its narration is {t}s"
+                for n, e, t in short)
+            return ("These scenes are far too short for their narration, so "
+                    f"the video would freeze on a still frame: {detail}. "
+                    "Add more animated beats and longer self.wait() holds "
+                    "until each scene fills its full time budget.")
     return None
 
 
@@ -74,11 +218,16 @@ ERROR (from manim):
 FULL FILE:
 {code}
 
-Fix the crash — and any other invalid Manim API usage you notice — with the
-smallest possible change. Rules:
+Fix the crash with the smallest possible change — AND scan the whole file
+for every other occurrence of the same class of mistake and fix those too,
+so the next render doesn't fail on the very next scene. Rules:
 - Keep every scene class name and the overall structure identical.
-- Only use the real Manim CE v0.20 API (e.g. Text takes font_size= and
-  font=; Code takes code_string/language; there is no 'size' kwarg).
+- Only use the real Manim CE v0.20 API. Text accepts ONLY: text, font_size,
+  color, weight (BOLD/NORMAL constants, not strings), font, slant,
+  line_spacing, t2c, t2w. Anything else (size, text_align, align, curve,
+  font_family, text_color...) does not exist. Code takes code_string and
+  language. Rectangle/Circle take width/height/radius, stroke_color,
+  stroke_width, fill_color, fill_opacity, color.
 - Keep the house-style imports and helpers exactly as they are.
 - `config` is THIS PROJECT's config.py, not Manim's global config. Use it
   only for colours (config.ACCENT, ACCENT_2, ACCENT_3, ACCENT_4, BG_COLOR,

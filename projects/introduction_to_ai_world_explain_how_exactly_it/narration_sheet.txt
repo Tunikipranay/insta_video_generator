@@ -1,0 +1,33 @@
+NARRATION SHEET — Introduction to AI: How It Actually Works
+Record one take per section; keep each within its time box.
+
+== DEEP VIDEO (208s) ==
+
+[  0s –  20s]  (hook)
+  You've probably asked a chatbot a question and gotten a weirdly human answer back. And you wondered: how does it know what to say? It's not looking things up in a database. It's not following a script. So what is it actually doing? Today, we're going to see inside that black box.
+
+[ 20s –  60s]  (before)
+  Before AI, if you wanted a computer to help you, you had to write down every single rule it should follow. You'd say: if the user types X, output Y. If they say Z, do this other thing. You're basically writing a massive instruction manual. And it works fine... until someone asks something you didn't predict. Then the computer just breaks. It's like hiring someone who can only follow the exact script you gave them.
+
+[ 60s – 120s]  (concept)
+  Here's the key insight: instead of writing rules, we're going to build something that learns patterns from examples. Think of it like training a mail sorter. You don't tell the mail sorter the rule 'if it has a stamp from Boston, it goes to the Northeast bin.' Instead, you show them hundreds of letters. They watch. They notice patterns. They see which features matter: the zip code, the envelope shape, the ink color. After seeing enough examples, they can sort new letters they've never seen before. That's what AI does. It learns patterns from data instead of following explicit rules. We call this 'training.' The patterns it finds, we call a 'model.' And the features it notices—like 'words that often go together'—those are called 'weights.' The model is just a bunch of learned weights. When you ask it a question, it uses all those learned patterns to predict the next word. Then the next one. Then the next one. Building your answer piece by piece.
+
+[120s – 180s]  (example)
+  Let's watch this happen in real code. A programmer is building a chatbot that predicts the next word in customer service replies. They have a dataset of ten thousand past support conversations. Step one: they load that data. Step two: they create a model—just an empty container with random weights. Step three is where the magic happens. They show the model a sentence from the dataset: 'The customer reported a problem with.' The model guesses what word comes next. It guesses 'cat.' That's wrong. The right answer is 'payment.' So the model adjusts its weights slightly. Not by a human manually editing them—automatically, by math. Then it sees the next sentence and adjusts again. And again. After seeing all ten thousand sentences multiple times, the weights have shifted. Now when you give it 'The customer reported a problem with,' it predicts 'payment' with high confidence. That's training. When you actually use the chatbot, you're not training anymore—those weights are frozen. You type something new. The model runs through its learned patterns and outputs the next word. You continue the conversation. Same process, word by word.
+
+[180s – 200s]  (recap)
+  If you remember one thing from this video, remember this: AI isn't magic, and it isn't following a hidden rulebook. It's a system that learned patterns by looking at examples—just like our mail sorter learned from letters. It builds answers by predicting one piece at a time, using everything it learned. The weights are the patterns. The training is just showing it examples and letting math adjust those patterns. That's the whole thing.
+
+[200s – 208s]  (cta)
+  If you want to go deeper—build your own model, see the math behind the weights, or understand why sometimes AI gets things wrong—we've got full tutorials coming. Subscribe so you don't miss them.
+
+== TEASER (45s) ==
+
+[  0s –   8s]  (t_hook)
+  Your AI chatbot isn't looking up answers in a database. It's not following a script someone wrote. So what's it actually doing?
+
+[  8s –  38s]  (t_tease)
+  Here's the thing: it learned by watching thousands of examples. Not by reading rules. Imagine training a mail sorter by just showing them letters. They never memorize the rules—they notice patterns. After enough examples, they can sort anything. That's exactly what AI does. It learns patterns from data, then predicts one piece at a time. No magic. Just math that noticed patterns you didn't have to write down. And in our full video, we walk through actual code and show you exactly how that works.
+
+[ 38s –  45s]  (t_cta)
+  The full breakdown is on our YouTube—link in the description. Come see inside.

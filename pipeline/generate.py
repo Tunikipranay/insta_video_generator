@@ -21,16 +21,27 @@ def _slug(topic: str) -> str:
 
 
 def _call_claude(prompt: str, max_tokens: int = 24000) -> str:
+    """Stream a completion. Streaming is required at this token budget, and
+    it lets us print a progress heartbeat during the long scene-writing call."""
     import anthropic  # pip install anthropic
     client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY
-    msg = client.messages.create(
+    chunks, n = [], 0
+    with client.messages.stream(
         model=config.AI_MODEL,
         max_tokens=max_tokens,
         messages=[{"role": "user", "content": prompt}],
-    )
+    ) as stream:
+        for text in stream.text_stream:
+            chunks.append(text)
+            n += len(text)
+            if n > 2000:
+                print(".", end="", flush=True)
+                n = 0
+        msg = stream.get_final_message()
+    print()
     if msg.stop_reason == "max_tokens":
         print(f"[warn] reply hit the {max_tokens}-token limit and was cut off")
-    return msg.content[0].text
+    return "".join(chunks)
 
 
 def _strip_fences(text: str) -> str:
@@ -38,6 +49,19 @@ def _strip_fences(text: str) -> str:
     text = re.sub(r"^```[a-z]*\n?", "", text)
     text = re.sub(r"\n?```$", "", text)
     return text
+
+
+def _scene_targets(script: dict) -> dict:
+    """Class-name prefix -> seconds of narration that scene must cover."""
+    targets = {}
+    for prefix, secs in zip(("S1_", "S2_", "S3_", "S4_", "S5_", "S6_"),
+                            [s["seconds"] for s in script["sections"]]):
+        targets[prefix] = secs
+    for prefix, secs in zip(("T1_", "T2_", "T3_"),
+                            [s["seconds"] for s in
+                             script.get("teaser", {}).get("sections", [])]):
+        targets[prefix] = secs
+    return targets
 
 
 def generate(topic: str) -> Path:
@@ -79,13 +103,14 @@ def generate(topic: str) -> Path:
         print(f"[skip] {scenes_path} already exists")
     elif have_key:
         print("[ai] writing Manim scenes")
-        from pipeline.repair import sanitize, validate
+        from pipeline.repair import sanitize, validate, pad_to_targets
         scene_prompt = (ROOT / "prompts" / "scene_prompt.txt").read_text().format(
             script_json=script_path.read_text())
+        targets = _scene_targets(json.loads(script_path.read_text()))
         prompt, code = scene_prompt, None
         for attempt in range(3):
             code = sanitize(_strip_fences(_call_claude(prompt)))
-            problem = validate(code)
+            problem = validate(code, targets)
             if problem is None:
                 break
             print(f"[retry {attempt + 1}/3] scene code rejected: {problem}")
@@ -94,11 +119,20 @@ def generate(topic: str) -> Path:
                       "Write the complete file, all nine scene classes, "
                       "in full.")
         else:
-            (workdir / "scenes_rejected.py").write_text(code)
-            raise SystemExit(
-                "The model could not produce a valid scenes.py in 3 tries. "
-                f"Last attempt saved to {workdir / 'scenes_rejected.py'}.")
-        scenes_path.write_text(code)
+            # Out of tries. A structurally sound file that is merely
+            # under-paced is still usable (the audio stage stretches it);
+            # a broken one is not.
+            if validate(code) is not None:
+                (workdir / "scenes_rejected.py").write_text(code)
+                raise SystemExit(
+                    "The model could not produce a valid scenes.py in 3 "
+                    f"tries. Last attempt saved to "
+                    f"{workdir / 'scenes_rejected.py'}.")
+            print("[warn] scenes still run short; stretching their holds "
+                  "to cover the narration.")
+        # Safety net: whatever the model gave us, make the holds long
+        # enough that no scene ends before its narration does.
+        scenes_path.write_text(pad_to_targets(code, targets))
     else:
         scene_prompt = (ROOT / "prompts" / "scene_prompt.txt").read_text().format(
             script_json=script_path.read_text())

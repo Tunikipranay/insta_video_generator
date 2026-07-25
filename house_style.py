@@ -6,11 +6,77 @@ from manim import *
 import config
 
 # Apply global look
-Text.set_default(color=config.TEXT_COLOR, font_size=36)
+Text.set_default(color=config.TEXT_COLOR, font_size=36, font=config.FONT_NAME)
+
+
+# Safe area: keep everything inside this and nothing is ever clipped,
+# with room for a title at the top and a caption at the bottom.
+SAFE_W = 12.4
+SAFE_H = 6.4
+
+CENTER = ORIGIN          # the model reaches for this name; Manim has ORIGIN
 
 
 def apply_theme(scene: Scene):
     scene.camera.background_color = config.BG_COLOR
+
+
+def fit(mobject, width=SAFE_W, height=SAFE_H, center=True):
+    """Shrink a mobject (never enlarge) so it fits the safe area.
+
+    Wrap every multi-part group in this before animating it — it is the
+    difference between a readable diagram and one that runs off screen.
+    """
+    if mobject.width > width:
+        mobject.scale_to_fit_width(width)
+    if mobject.height > height:
+        mobject.scale_to_fit_height(height)
+    if center:
+        mobject.move_to(ORIGIN)
+    return mobject
+
+
+def scene_title(text):
+    """The one element that stays on screen for a whole scene."""
+    return Text(str(text), font_size=44, weight=BOLD,
+                color=config.ACCENT).to_edge(UP, buff=0.5)
+
+
+def place(content):
+    """Centre a content group in the area below the title, scaled to fit."""
+    fit(content, SAFE_W, 4.9, center=False)
+    content.move_to(DOWN * 0.45)
+    return content
+
+
+def swap(scene, old, new, run_time=1.0):
+    """Cross-fade the previous beat's visuals for the next one's.
+
+    Use this for every content change: the frame is never empty, nothing
+    from the previous beat is left behind on screen, and the new group is
+    automatically centred and scaled to fit. Returns the new group so you
+    can pass it in as `old` next time.
+
+        cur = None
+        cur = swap(self, cur, VGroup(diagram, caption).arrange(DOWN))
+    """
+    new = place(new)
+    if old is None:
+        scene.play(FadeIn(new), run_time=run_time)
+    else:
+        scene.play(FadeOut(old), FadeIn(new), run_time=run_time)
+    return new
+
+
+def labeled(shape, text, direction=DOWN, buff=0.25, font_size=24, color=None):
+    """A shape with its name placed beside it — never on top of it.
+
+    Every box, circle and arrow on screen must say what it represents.
+    """
+    t = Text(str(text), font_size=max(int(font_size), 22),
+             color=color or config.TEXT_COLOR)
+    t.next_to(shape, direction, buff=buff)
+    return VGroup(shape, t)
 
 
 def glow_dot(point=ORIGIN, color=None, radius=0.09):

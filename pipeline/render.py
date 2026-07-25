@@ -70,8 +70,11 @@ def render(project_dir: str, quality: str = None):
 
     media = workdir / "media"
     for s in deep + teaser:
-        run(["manim", quality, "--disable_caching", "--media_dir", media,
-             scenes_py, s], cwd=ROOT)  # cwd=ROOT so house_style/config import
+        # sys.executable -m manim, not bare "manim": works whether or not the
+        # venv's bin/ is on PATH, and always uses this interpreter's manim.
+        run([sys.executable, "-m", "manim", quality, "--disable_caching",
+             "--media_dir", media, scenes_py, s],
+            cwd=ROOT)  # cwd=ROOT so house_style/config import
 
     qdir = QUALITY_DIRS[quality]
     clip = lambda s: media / "videos" / "scenes" / qdir / f"{s}.mp4"

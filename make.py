@@ -51,15 +51,19 @@ def main():
 
     # A scenes.py carried over from an earlier run (or hand-edited) may be
     # truncated or missing classes — catch that before manim does.
-    problem = validate(scenes_path.read_text())
-    if problem:
+    problem = validate(scenes_path.read_text())   # structure only; pacing
+    if problem:                                   # is enforced at generation
         print(f"[check] existing scenes.py is not usable: {problem}")
         if not os.environ.get("ANTHROPIC_API_KEY") or not repair(
                 scenes_path, problem):
             raise SystemExit(
                 f"Delete {scenes_path} and re-run to regenerate it.")
 
-    for attempt in range(3):
+    # Invented Manim kwargs surface one scene at a time, so allow several
+    # rounds — each round costs one cheap model call, a failed video costs
+    # the whole run.
+    ATTEMPTS = 6
+    for attempt in range(ATTEMPTS):
         try:
             render(workdir, quality)
             break
@@ -71,11 +75,12 @@ def main():
                     print("[repair] applied static API fixes, retrying...")
                     scenes_path.write_text(cleaned)
                     continue
-            if attempt == 2 or not os.environ.get("ANTHROPIC_API_KEY"):
+            if attempt == ATTEMPTS - 1 or not os.environ.get("ANTHROPIC_API_KEY"):
                 raise SystemExit(
                     "Scene render failed. Fix the error above in "
                     f"{scenes_path} and re-run.")
-            print("[repair] scene code crashed — asking the AI to fix it...")
+            print(f"[repair {attempt + 1}/{ATTEMPTS - 1}] scene code crashed "
+                  "— asking the AI to fix it...")
             if not repair(scenes_path, err):
                 raise SystemExit(f"Auto-repair failed; fix {scenes_path} manually.")
 

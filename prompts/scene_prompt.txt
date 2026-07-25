@@ -14,16 +14,57 @@ SCENE CLASSES (mandatory naming — they are rendered separately, in order):
 HOUSE RULES (mandatory):
 - from manim import *   and   from house_style import *   and   import config
 - First line of every construct(): apply_theme(self)
-- Use the helpers: title_card, code_block, kv_box, glow_dot, label_chip,
-  end_card. Colors ONLY from config (ACCENT, ACCENT_2, ACCENT_3, ACCENT_4).
+- Use the helpers: title_card, scene_title, swap, place, fit, labeled,
+  code_block, kv_box, glow_dot, label_chip, end_card. Colors ONLY from
+  config (ACCENT, ACCENT_2, ACCENT_3, ACCENT_4).
+- SCENE SKELETON — follow this for EVERY scene except S6_CTA and T3_CTA:
+
+      def construct(self):
+          apply_theme(self)
+          title = scene_title("The Old Way: Rules")
+          self.play(FadeIn(title))
+          cur = None
+          cur = swap(self, cur, VGroup(...).arrange(DOWN, buff=0.5))
+          self.wait(2)
+          ...                      # highlight / annotate this beat
+          cur = swap(self, cur, VGroup(...).arrange(RIGHT, buff=0.8))
+          self.wait(2)
+
+  swap() cross-fades the old beat out as the new one fades in, and centres
+  and scales the new group for you. It is the ONLY way to change content:
+  never leave a previous beat's shapes on screen, and never FadeOut
+  everything with nothing replacing it. If you animate an extra element
+  into the current beat, add it to the group (cur.add(x)) so the next swap
+  removes it too. The title stays up the whole scene.
+- LEGIBILITY (this is watched on a phone). Minimum font sizes: scene title
+  44, body/caption 30, diagram labels 26, code 24. NEVER go below 24 for
+  anything. Fewer, bigger elements always beat more, smaller ones — if a
+  diagram needs 8 tiny labels, split it across two beats instead.
+- FIT THE FRAME. Build each diagram as a VGroup, arrange it with
+  .arrange() / .next_to(), then call fit(group) before animating it in.
+  fit() shrinks it into the safe area so nothing runs off screen. A title
+  at to_edge(UP) plus a diagram means fit(group, height=4.6).
+- LABELS GO BESIDE, NOT ON TOP. Use labeled(shape, "Mail Sorter") or
+  .next_to(shape, DOWN, buff=0.3). Never .move_to() a label onto a shape
+  that already has content, and never place a caption where a code line,
+  arrow or another label already is. Check every element you position:
+  if two things could occupy the same spot, move one.
+- Annotating code: put step labels to the LEFT or RIGHT of the code block
+  (next_to(code, RIGHT, buff=0.4)), never over it, and highlight the line
+  under discussion with SurroundingRectangle instead.
 - CALM PACING: one new visual element at a time; after each meaningful
   moment, hold with self.wait(1.5) or more. Prefer 3-4 substantial visuals
   per scene over 10 rushed ones. Smooth rate functions
   (rate_functions.ease_in_out_sine), LaggedStart for groups.
-- Each scene's total run_time must roughly equal its section's "seconds"
-  (within ~10%%). Add self.wait() padding at the end to hit the target.
-  (If narration runs longer anyway, the pipeline slows the scene — never
-  plan for that, plan for the target.)
+- FILL THE TIME BUDGET. Each scene must run for its section's "seconds",
+  and this is checked before rendering — a scene that runs short leaves the
+  video frozen on a still frame while the narrator keeps talking. Budget
+  it explicitly: a beat is one self.play(..., run_time=1.5) followed by
+  one self.wait(2), so roughly 3.5s. A 60-second section therefore needs
+  about 17 beats — seventeen separate reveals, highlights, moves or
+  annotations, not four. Count them as you write. Sum every run_time and
+  wait in the scene; if the total is under the section's seconds, add more
+  beats (do NOT just pad the end with one giant wait).
 - 3D: at most ONE deep-video section may be a ThreeDScene with a slow
   ambient camera rotation.
 - Code on screen must be real, runnable Python, shown with code_block and
