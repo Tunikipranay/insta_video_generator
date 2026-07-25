@@ -35,6 +35,15 @@ HOUSE RULES (mandatory):
   empty or black while narration could still be playing. End every scene
   holding its key visual with self.wait(). Transitions between scenes are
   handled by the pipeline.
+- The frame must NEVER be empty at any moment, including mid-scene: when
+  replacing content, fade the new in together with (or before) fading the
+  old out, and keep a persistent element (title or caption) on screen.
+- Every shape (Rectangle, Circle, Arrow...) MUST have a visible Text label
+  on or next to it saying what it represents. Unlabeled boxes and circles
+  mean nothing to viewers. If you can't label it, don't draw it.
+- Abstract or historical topics: prefer concrete devices — a horizontal
+  timeline with year labels and event cards, labeled before/after panels,
+  a growing list of named milestones — over abstract shape metaphors.
 - Text() takes font= (a font name string), never font_family=.
 - glow_dot(point) takes a coordinate like RIGHT*2+UP*1 (a Mobject also
   works: its center is used). Keep default radius.
